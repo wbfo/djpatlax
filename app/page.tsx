@@ -8,18 +8,24 @@ import EventsSection from '@/components/sections/Events';
 import OutsideAgendaSection from '@/components/sections/OutsideAgenda';
 import BookingSection from '@/components/sections/Booking';
 import FooterSection from '@/components/sections/Footer';
+import TonightEventBar from '@/components/TonightEventBar';
+import TonightEventHero from '@/components/TonightEventHero';
 
 export default function HomePage() {
     return (
         <div className="min-h-screen">
-            <HeroSection />
-            <CredentialsSection />
-            <AboutSection />
-            <MixesSection />
-            <EventsSection />
-            <OutsideAgendaSection />
-            <BookingSection />
-            <FooterSection />
+            <TonightEventBar />
+            <div className="pt-16">
+                <HeroSection />
+                <TonightEventHero />
+                <CredentialsSection />
+                <AboutSection />
+                <MixesSection />
+                <EventsSection />
+                <OutsideAgendaSection />
+                <BookingSection />
+                <FooterSection />
+            </div>
         </div>
     );
 }
