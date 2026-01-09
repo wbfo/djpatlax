@@ -2,7 +2,29 @@
 
 import Image from 'next/image';
 
+import { Share2 } from 'lucide-react';
+
 export default function TonightEventHero() {
+    const handleShare = async () => {
+        const shareData = {
+            title: 'Downtown Nights at IKOYI',
+            text: 'Tonight! Downtown Nights at IKOYI with DJ Pat Lax + DJ Hushbravo. 10PM-2AM. 11 Clinton St, Newark.',
+            url: 'http://www.ikoyirestaurant.com'
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
+                // Optional: You could add a toast notification here if you have one
+                alert('Event details copied to clipboard!');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    };
+
     return (
         <section className="py-16 px-6 bg-gradient-to-br from-orange-500 via-yellow-500 to-orange-600">
             <div className="max-w-6xl mx-auto">
@@ -27,7 +49,7 @@ export default function TonightEventHero() {
                     </div>
 
                     {/* Event Details */}
-                    <div className="text-white">
+                    <div className="text-white flex flex-col items-center text-center">
                         <div className="inline-block px-4 py-2 bg-black rounded-full text-sm font-bold mb-4">
                             🔴 HAPPENING TONIGHT
                         </div>
@@ -36,8 +58,8 @@ export default function TonightEventHero() {
                             DOWNTOWN NIGHTS<br />AT IKOYI
                         </h2>
 
-                        <div className="space-y-4 text-black text-lg font-medium mb-8">
-                            <div className="flex items-start gap-3">
+                        <div className="space-y-4 text-black text-lg font-medium mb-8 w-full">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3">
                                 <span className="text-2xl">📅</span>
                                 <div>
                                     <div className="font-bold">Tonight, Friday January 9th</div>
@@ -45,7 +67,7 @@ export default function TonightEventHero() {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3">
                                 <span className="text-2xl">🎵</span>
                                 <div>
                                     <div className="font-bold">Music by DJ Pat Lax + DJ Hushbravo</div>
@@ -53,7 +75,7 @@ export default function TonightEventHero() {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3">
                                 <span className="text-2xl">📍</span>
                                 <div>
                                     <div className="font-bold">IKOYI Restaurant & Lounge</div>
@@ -61,7 +83,7 @@ export default function TonightEventHero() {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3">
                                 <span className="text-2xl">🍹</span>
                                 <div>
                                     <div className="font-bold">Happy Hour 4-7PM</div>
@@ -69,7 +91,7 @@ export default function TonightEventHero() {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-3">
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3">
                                 <span className="text-2xl">🎉</span>
                                 <div>
                                     <div className="font-bold">$150 Bottle Special</div>
@@ -78,7 +100,7 @@ export default function TonightEventHero() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <a
                                 href="http://www.ikoyirestaurant.com"
                                 target="_blank"
@@ -93,6 +115,14 @@ export default function TonightEventHero() {
                             >
                                 Call: (908) 275-1495
                             </a>
+                            <button
+                                onClick={handleShare}
+                                className="px-8 py-4 bg-white/20 backdrop-blur-sm border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2"
+                                aria-label="Share Event"
+                            >
+                                <Share2 className="w-5 h-5" />
+                                Share
+                            </button>
                         </div>
                     </div>
                 </div>
