@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import ChatWidget from "@/components/ChatWidget";
+import BackgroundMusicPlayer from "@/components/BackgroundMusicPlayer";
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://djpatlax.com'), // Replace with actual domain if different
@@ -46,6 +47,7 @@ export default function RootLayout({
                     {children}
                 </main>
                 <ChatWidget />
+                <BackgroundMusicPlayer />
             </body>
         </html>
     );
