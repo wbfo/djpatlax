@@ -80,7 +80,7 @@ export const upcomingEvents = [
         venue: "Ivory On Park",
         date: "2026-08-29",
         city: "NYC",
-        ticketUrl: "#",
+        ticketUrl: "https://www.instagram.com/outsideagendanyc/",
     },
     {
         id: 2,
