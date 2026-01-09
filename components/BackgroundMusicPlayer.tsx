@@ -1,7 +1,26 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, Volume2, VolumeX, SkipForward, SkipBack } from 'lucide-react';
+
+interface SCWidget {
+    play: () => void;
+    pause: () => void;
+    setVolume: (volume: number) => void;
+    bind: (event: string, callback: () => void) => void;
+}
+
+interface WindowWithSC extends Window {
+    SC: {
+        Widget: {
+            (iframe: HTMLIFrameElement): SCWidget;
+            Events: {
+                READY: string;
+                FINISH: string;
+            };
+        };
+    };
+}
 
 export default function BackgroundMusicPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -10,7 +29,7 @@ export default function BackgroundMusicPlayer() {
     const [currentTrack, setCurrentTrack] = useState(0);
     const [hasInteracted, setHasInteracted] = useState(false);
     const [showPlayer, setShowPlayer] = useState(false);
-    const widgetRef = useRef<any>(null);
+    const widgetRef = useRef<SCWidget | null>(null);
     const playerContainerRef = useRef<HTMLDivElement>(null);
 
     // The 3 SoundCloud tracks
@@ -26,9 +45,18 @@ export default function BackgroundMusicPlayer() {
         'NBA All Star Weekend'
     ];
 
+    const nextTrack = useCallback(() => {
+        setCurrentTrack((prev) => (prev + 1) % tracks.length);
+    }, [tracks.length]);
+
+    const previousTrack = useCallback(() => {
+        setCurrentTrack((prev) => (prev - 1 + tracks.length) % tracks.length);
+    }, [tracks.length]);
+
     useEffect(() => {
         // Load SoundCloud Widget API
-        if (!(window as any).SC) {
+        const win = window as unknown as WindowWithSC;
+        if (!win.SC) {
             const script = document.createElement('script');
             script.src = 'https://w.soundcloud.com/player/api.js';
             script.async = true;
@@ -62,14 +90,15 @@ export default function BackgroundMusicPlayer() {
     }, [hasInteracted]);
 
     useEffect(() => {
-        if (hasInteracted && (window as any).SC) {
+        const win = window as unknown as WindowWithSC;
+        if (hasInteracted && win.SC) {
             const iframe = playerContainerRef.current?.querySelector('iframe');
             if (!iframe) return;
 
-            const widget = (window as any).SC.Widget(iframe);
+            const widget = win.SC.Widget(iframe);
             widgetRef.current = widget;
 
-            widget.bind((window as any).SC.Widget.Events.READY, () => {
+            widget.bind(win.SC.Widget.Events.READY, () => {
                 // Start at volume 0 and fade in
                 widget.setVolume(0);
                 widget.play();
@@ -88,11 +117,11 @@ export default function BackgroundMusicPlayer() {
             });
 
             // Auto-advance to next track when current finishes
-            widget.bind((window as any).SC.Widget.Events.FINISH, () => {
+            widget.bind(win.SC.Widget.Events.FINISH, () => {
                 nextTrack();
             });
         }
-    }, [hasInteracted, currentTrack]);
+    }, [hasInteracted, currentTrack, nextTrack]);
 
     useEffect(() => {
         if (widgetRef.current) {
@@ -133,13 +162,7 @@ export default function BackgroundMusicPlayer() {
         }
     };
 
-    const nextTrack = () => {
-        setCurrentTrack((prev) => (prev + 1) % tracks.length);
-    };
 
-    const previousTrack = () => {
-        setCurrentTrack((prev) => (prev - 1 + tracks.length) % tracks.length);
-    };
 
     if (!hasInteracted) return null;
 

@@ -144,7 +144,7 @@ export async function sendMessage(
                     };
                 }
             }
-        } catch (e) {
+        } catch {
             // Not a booking inquiry or JSON parsing failed, just return the text
         }
 
