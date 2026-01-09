@@ -6,6 +6,7 @@ import { Play, Pause, Volume2, VolumeX, SkipForward, SkipBack } from 'lucide-rea
 export default function BackgroundMusicPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(50);
     const [currentTrack, setCurrentTrack] = useState(0);
     const [hasInteracted, setHasInteracted] = useState(false);
     const [showPlayer, setShowPlayer] = useState(false);
@@ -73,15 +74,17 @@ export default function BackgroundMusicPlayer() {
                 widget.setVolume(0);
                 widget.play();
 
-                // Fade in gradually over 2 seconds
-                let volume = 0;
+                // Fade in gradually over 5 seconds
+                let currentVol = 0;
+                const targetVol = 50;
                 const fadeInterval = setInterval(() => {
-                    volume += 2;
-                    widget.setVolume(volume);
-                    if (volume >= 50) {
+                    currentVol += 1;
+                    widget.setVolume(currentVol);
+                    if (currentVol >= targetVol) {
                         clearInterval(fadeInterval);
+                        setVolume(targetVol);
                     }
-                }, 40); // 2 seconds total (50 steps * 40ms)
+                }, 100); // 5 seconds total (50 steps * 100ms)
             });
 
             // Auto-advance to next track when current finishes
@@ -103,16 +106,31 @@ export default function BackgroundMusicPlayer() {
 
     useEffect(() => {
         if (widgetRef.current) {
-            widgetRef.current.setVolume(isMuted ? 0 : 50);
+            widgetRef.current.setVolume(isMuted ? 0 : volume);
         }
-    }, [isMuted]);
+    }, [isMuted, volume]);
 
     const togglePlay = () => {
         setIsPlaying(!isPlaying);
     };
 
     const toggleMute = () => {
-        setIsMuted(!isMuted);
+        if (isMuted) {
+            setIsMuted(false);
+            // Volume restores to 'volume' state automatically via useEffect
+        } else {
+            setIsMuted(true);
+        }
+    };
+
+    const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVolume = parseInt(e.target.value);
+        setVolume(newVolume);
+        if (newVolume > 0 && isMuted) {
+            setIsMuted(false);
+        } else if (newVolume === 0 && !isMuted) {
+            setIsMuted(true);
+        }
     };
 
     const nextTrack = () => {
@@ -189,18 +207,33 @@ export default function BackgroundMusicPlayer() {
                             <SkipForward className="w-4 h-4 text-white" />
                         </button>
 
-                        {/* Volume */}
-                        <button
-                            onClick={toggleMute}
-                            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors ml-auto"
-                            aria-label={isMuted ? 'Unmute' : 'Mute'}
-                        >
-                            {isMuted ? (
-                                <VolumeX className="w-4 h-4 text-white" />
-                            ) : (
-                                <Volume2 className="w-4 h-4 text-white" />
-                            )}
-                        </button>
+                        {/* Volume Control Group */}
+                        <div className="flex items-center gap-2 ml-auto group">
+                            {/* Volume Icon */}
+                            <button
+                                onClick={toggleMute}
+                                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                                aria-label={isMuted ? 'Unmute' : 'Mute'}
+                            >
+                                {isMuted || volume === 0 ? (
+                                    <VolumeX className="w-4 h-4 text-white" />
+                                ) : (
+                                    <Volume2 className="w-4 h-4 text-white" />
+                                )}
+                            </button>
+
+                            {/* Volume Slider */}
+                            <div className="w-20 transition-all duration-300 ease-in-out">
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={isMuted ? 0 : volume}
+                                    onChange={handleVolumeChange}
+                                    className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Track Progress Dots */}
@@ -210,8 +243,8 @@ export default function BackgroundMusicPlayer() {
                                 key={idx}
                                 onClick={() => setCurrentTrack(idx)}
                                 className={`h-1.5 transition-all ${idx === currentTrack
-                                        ? 'bg-orange-500 w-8'
-                                        : 'bg-white/20 w-1.5 hover:bg-white/40'
+                                    ? 'bg-orange-500 w-8'
+                                    : 'bg-white/20 w-1.5 hover:bg-white/40'
                                     } rounded-full`}
                                 aria-label={`Play track ${idx + 1}`}
                             />
