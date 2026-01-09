@@ -18,14 +18,14 @@ export default function HeroSection() {
                 <div className="absolute inset-0 bg-black/60 z-10"></div>
             </div>
 
-            <div className="relative z-10 text-center max-w-6xl mx-auto animate-fade-in">
-                <div className="mb-8 flex justify-center">
+            <div className="relative z-10 text-center max-w-[126rem] mx-auto animate-fade-in">
+                <div className="mb-0 flex justify-center">
                     <Image
                         src="/images/patlax-logo.png"
                         alt="DJ Pat Lax"
-                        width={1350}
-                        height={450}
-                        className="w-full max-w-6xl h-auto"
+                        width={2362}
+                        height={787}
+                        className="w-full max-w-[120rem] h-auto drop-shadow-[0_0_30px_rgba(34,197,94,0.3)] transition-transform hover:scale-[1.02] duration-500"
                         priority
                     />
                 </div>
