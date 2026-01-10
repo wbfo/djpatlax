@@ -17,22 +17,8 @@ export default function TonightEventBar() {
                         <span className="font-black">TONIGHT!</span> Downtown Nights at IKOYI • DJ Pat Lax • 10PM-2AM
                     </div>
                 </div>
-                <div className="relative z-10 shrink-0 ml-2 hidden sm:block">
-                    <a
-                        href="http://www.ikoyirestaurant.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-1.5 bg-black text-white text-xs sm:text-sm rounded-full font-bold hover:bg-gray-900 transition-all whitespace-nowrap"
-                    >
-                        Reserve
-                    </a>
-                </div>
-                {/* Mobile Button Replacement or kept in flow? I'll keep it hidden on very small screens if it breaks layout, but user said 'all in one line'. 
-                     Actually, let's try to keep it visible but maybe just icon? Or smaller. 
-                     I'll use 'hidden sm:block' for the button to prioritize the text line on mobile, as fitting both is very hard on <350px. 
-                     Wait, user might want the button. I'll make it conditionally visible or just very small. 
-                     Let's try to keep it visible but simpler. 
-                  */}
+
+
                 <div className="relative z-10 shrink-0 ml-2 sm:ml-4">
                     <a
                         href="http://www.ikoyirestaurant.com"
